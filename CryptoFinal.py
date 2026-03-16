@@ -1,0 +1,92 @@
+import copy
+from math import isqrt
+import random
+
+squares = {i: i**2 for i in range(1, 21)}
+print(squares)
+
+def RandomFill(length):
+    # This function fills the input string with random ints until it reaches the specified length.
+    Path = set()
+    while len(Path) < length:
+        Path.add(str(random.randint(0, length-1)))
+    ListPath = list(Path)
+    return ListPath
+
+def List_to_Matrix(size, path):
+    # This function converts a List of strings to a Matrix string.
+    matrix = []
+    for x in range(size):
+        matrix.append([])
+    for x in range(size):
+        for y in range(size):
+            num = path.pop(0)
+            matrix[x].append(num)
+    return matrix
+
+def Encrypt_String_to_Matrix(string, matrix):
+    # This function encrypts the input string using the matrix.
+    char_list = list(string)
+    Encrypted_String = ""
+    for x in range(len(matrix)):
+        for y in range(len(matrix)):
+            num = int(matrix[x][y])
+            matrix[x][y] = char_list[num]
+            Encrypted_String += char_list[num]
+            
+    return matrix, Encrypted_String
+
+def Decrypt_String_to_Matrix(encrypted_string, matrix):
+    # This function decrypts the input string using the matrix.
+    char_list = list(encrypted_string)
+    #print(matrix)
+    for x in range(len(matrix)):
+        for y in range(len(matrix)):
+            matrix[x][y] = char_list.pop(0)
+    return matrix
+
+if __name__ == "__main__":
+    String = input("Enter the string you wish to encrypt: ")
+    Str_length = len(String)
+    String = String.replace(" ", "x")
+    print(f"The length of the string is: {Str_length}")
+    size = 0
+    for x in squares.keys():
+        if squares[x] < Str_length:
+            continue
+        elif squares[x] == Str_length:
+            print("The length of the string is a perfect square.")
+            print("would you like to use the next perfect square as the size of the random string? (y/n)")
+            answer = input()            
+            if answer.lower() == 'y':
+                size = squares[x+1]
+            if answer.lower() == 'n':
+                size = squares[x]
+            break
+        elif squares[x] > Str_length:
+            size = squares[x]
+            break
+    if Str_length > squares[20]:
+        print("The length of the string is too long. Please enter a string with a length of 400 or less.")
+        exit()
+    if Str_length < size:
+        diff = size - Str_length
+        for x in range(diff):
+            String += "x"
+    random_string = RandomFill(size)
+    print(random_string)
+    dims = isqrt(size)
+    NumMatrix = List_to_Matrix(dims, random_string)
+    CharMatrix = copy.deepcopy(NumMatrix)
+    for x in range(dims):
+        print(NumMatrix[x])
+    Encrypted_Matrix, Encrypted_String = Encrypt_String_to_Matrix(String, CharMatrix)
+    for x in range(dims):
+        print(Encrypted_Matrix[x])
+    print(f"Encrypted String: {Encrypted_String}")
+    print(NumMatrix)
+    Decrypted_Matrix = Decrypt_String_to_Matrix(Encrypted_String, NumMatrix)
+    for x in range(dims):
+        print(Decrypted_Matrix[x])
+
+
