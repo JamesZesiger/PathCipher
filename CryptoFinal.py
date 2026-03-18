@@ -68,14 +68,19 @@ if __name__ == "__main__":
     print("2. Decrypt a string")
     choice = input("Enter your choice (1 or 2): ")
     if choice == "1":
-        String = input("Enter the string you wish to encrypt: ")
+        while True:
+            String = input("Enter the string you wish to encrypt: ")
+            Str_length = len(String)
+            String = String.replace(" ", "x")
+            String = String.lower()
+            if Str_length > squares[20]:
+                print("The length of the string is too long. Please enter a string with a length of 400 or less.")
+            else:
+                break
         FileName = input("Enter the name of the file you wish to save the encrypted string to (add the .txt extension): ")
-        Str_length = len(String)
-        String = String.replace(" ", "x")
-        String = String.lower()
         print(f"The length of the string is: {Str_length}")
         size = 0
-        for x in squares.keys():
+        for x in squares.keys(): 
             if squares[x] < Str_length:
                 continue
             elif squares[x] == Str_length:
@@ -90,17 +95,36 @@ if __name__ == "__main__":
             elif squares[x] > Str_length:
                 size = squares[x]
                 break
-        if Str_length > squares[20]:
-            print("The length of the string is too long. Please enter a string with a length of 400 or less.")
-            exit()
         if Str_length < size:
             diff = size - Str_length
             for x in range(diff):
                 String += "x"
-        random_string = RandomFill(size)
-        print(random_string)
+        print("Would you like to use a random matrix as the key for the encryption? (y/n)")
+        answer = input()
+        answer = answer.lower()
         dims = isqrt(size)
-        NumMatrix = List_to_Matrix(dims, random_string)
+        if answer == 'y':    
+            random_string = RandomFill(size)
+            print(random_string)
+            NumMatrix = List_to_Matrix(dims, random_string)
+        elif answer == 'n':
+            while True:
+                print(f"Please enter the matrix you wish to use for the encryption. (The matrix should be a square matrix of size {dims}x{dims})")
+                print("Enter in the form of [[0, 1, 2], [3, 4, 5], [6, 7, 8]]")
+                matrix_input = input("Enter the matrix: ")
+                NumMatrix = eval(matrix_input)
+                try :
+                    if len(NumMatrix) != dims:
+                        print(f"The matrix is not the correct size. Please enter a square matrix of size {dims}x{dims}.")
+                        continue
+                    for x in range(len(NumMatrix)):
+                        if len(NumMatrix[x]) != dims:
+                            print(f"The matrix is not the correct size. Please enter a square matrix of size {dims}x{dims}.")
+                            continue
+                    break
+                except:
+                    print("The matrix is not in the correct format or size. Please enter the matrix in the form of [[0, 1, 2], [3, 4, 5], [6, 7, 8]] with dimensions {dims}x{dims}.")
+                    continue   
         CharMatrix = copy.deepcopy(NumMatrix)
         print(NumMatrix)
         Encrypted_Matrix, Encrypted_String = Encrypt_String_to_Matrix(String, CharMatrix)
@@ -109,15 +133,12 @@ if __name__ == "__main__":
         print(f"Encrypted String: {Encrypted_String}")
         # Write new content (overwrites existing file)
         dict_to_write = {"Encrypted_String": Encrypted_String, "NumMatrix": NumMatrix}
-        FolderName = "PathCipher"
-        WriteName = f"{FolderName}/{FileName}"
-        with open(WriteName, 'w') as f:
+        with open(FileName, 'w') as f:
             f.write(f"{dict_to_write}")
     else:
         string = input("Enter the name of the file you wish to read the encrypted string from (add the .txt extension): ")
-        FolderName = "PathCipher"
-        ReadName = f"{FolderName}/{string}"
-        with open(ReadName, 'r') as f:
+        ReadName = f"{string}"
+        with open(string, 'r') as f:
             content = f.read()
         content = eval(content)
         String = content["Encrypted_String"]
