@@ -109,10 +109,15 @@ if __name__ == "__main__":
         print(f"Encrypted String: {Encrypted_String}")
         # Write new content (overwrites existing file)
         dict_to_write = {"Encrypted_String": Encrypted_String, "NumMatrix": NumMatrix}
-        with open(FileName, 'w') as f:
+        FolderName = "PathCipher"
+        WriteName = f"{FolderName}/{FileName}"
+        with open(WriteName, 'w') as f:
             f.write(f"{dict_to_write}")
     else:
-        with open(input("Enter the name of the file you wish to read the encrypted string from (add the .txt extension): "), 'r') as f:
+        string = input("Enter the name of the file you wish to read the encrypted string from (add the .txt extension): ")
+        FolderName = "PathCipher"
+        ReadName = f"{FolderName}/{string}"
+        with open(ReadName, 'r') as f:
             content = f.read()
         content = eval(content)
         String = content["Encrypted_String"]
