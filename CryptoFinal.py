@@ -58,47 +58,56 @@ def Get_String_From_Matrix(matrix, NumMatrix, length):
     return string
 
 if __name__ == "__main__":
-    String = input("Enter the string you wish to encrypt: ")
-    Str_length = len(String)
-    String = String.replace(" ", "x")
-    String = String.lower()
-    print(f"The length of the string is: {Str_length}")
-    size = 0
-    for x in squares.keys():
-        if squares[x] < Str_length:
-            continue
-        elif squares[x] == Str_length:
-            print("The length of the string is a perfect square.")
-            print("would you like to use the next perfect square as the size of the random string? (y/n)")
-            answer = input()            
-            if answer.lower() == 'y':
-                size = squares[x+1]
-            if answer.lower() == 'n':
+    print("What would you like to do?")
+    print("1. Encrypt a string")
+    print("2. Decrypt a string")
+    choice = input("Enter your choice (1 or 2): ")
+    if choice == "1":
+        String = input("Enter the string you wish to encrypt: ")
+        Str_length = len(String)
+        String = String.replace(" ", "x")
+        String = String.lower()
+        print(f"The length of the string is: {Str_length}")
+        size = 0
+        for x in squares.keys():
+            if squares[x] < Str_length:
+                continue
+            elif squares[x] == Str_length:
+                print("The length of the string is a perfect square.")
+                print("would you like to use the next perfect square as the size of the random string? (y/n)")
+                answer = input()            
+                if answer.lower() == 'y':
+                    size = squares[x+1]
+                if answer.lower() == 'n':
+                    size = squares[x]
+                break
+            elif squares[x] > Str_length:
                 size = squares[x]
-            break
-        elif squares[x] > Str_length:
-            size = squares[x]
-            break
-    if Str_length > squares[20]:
-        print("The length of the string is too long. Please enter a string with a length of 400 or less.")
-        exit()
-    if Str_length < size:
-        diff = size - Str_length
-        for x in range(diff):
-            String += "x"
-    random_string = RandomFill(size)
-    print(random_string)
-    dims = isqrt(size)
-    NumMatrix = List_to_Matrix(dims, random_string)
-    CharMatrix = copy.deepcopy(NumMatrix)
-    for x in range(dims):
-        print(NumMatrix[x])
-    Encrypted_Matrix, Encrypted_String = Encrypt_String_to_Matrix(String, CharMatrix)
-    for x in range(dims):
-        print(Encrypted_Matrix[x])
-    print(f"Encrypted String: {Encrypted_String}")
-    Decrypted_Matrix = Decrypt_String_to_Matrix(Encrypted_String, NumMatrix)
-    for x in range(dims):
-        print(Decrypted_Matrix[x])
-    Decrypted_String = Get_String_From_Matrix(Decrypted_Matrix, NumMatrix, size)
-    print(f"Decrypted String: {Decrypted_String}")
+                break
+        if Str_length > squares[20]:
+            print("The length of the string is too long. Please enter a string with a length of 400 or less.")
+            exit()
+        if Str_length < size:
+            diff = size - Str_length
+            for x in range(diff):
+                String += "x"
+        random_string = RandomFill(size)
+        print(random_string)
+        dims = isqrt(size)
+        NumMatrix = List_to_Matrix(dims, random_string)
+        CharMatrix = copy.deepcopy(NumMatrix)
+        print(NumMatrix)
+        Encrypted_Matrix, Encrypted_String = Encrypt_String_to_Matrix(String, CharMatrix)
+        for x in range(dims):
+            print(Encrypted_Matrix[x])
+        print(f"Encrypted String: {Encrypted_String}")
+    else:
+        String = input("Enter the string you wish to decrypt: ")
+        NumMatrix = input("Enter the matrix used to encrypt the string (in the format [[0,1,2],[3,4,5],[6,7,8]]): ")
+        size = len(String)
+        dims = isqrt(size)
+        Decrypted_Matrix = Decrypt_String_to_Matrix(String, NumMatrix)
+        for x in range(dims):
+            print(Decrypted_Matrix[x])
+        Decrypted_String = Get_String_From_Matrix(Decrypted_Matrix, NumMatrix, size)
+        print(f"Decrypted String: {Decrypted_String}")
