@@ -50,11 +50,16 @@ def Decrypt_String_to_Matrix(encrypted_string, matrix):
 def Get_String_From_Matrix(matrix, NumMatrix, length):
     # This function gets the string from the matrix.
     string = ""
-    for x in range(length):
-        for y in range(len(matrix)):
-            for z in range(len(matrix)):
-                if NumMatrix[y][z] == str(x):
-                    string += matrix[y][z]
+    place = 0
+    for num in range(length):
+        for x in range(len(matrix)):
+            if str(place) in NumMatrix[x]:
+                for y in range(len(matrix)):
+                    if NumMatrix[x][y] == str(place):
+                        string += matrix[x][y]
+                        place += 1
+                        break
+
     return string
 
 if __name__ == "__main__":
@@ -64,6 +69,7 @@ if __name__ == "__main__":
     choice = input("Enter your choice (1 or 2): ")
     if choice == "1":
         String = input("Enter the string you wish to encrypt: ")
+        FileName = input("Enter the name of the file you wish to save the encrypted string to (add the .txt extension): ")
         Str_length = len(String)
         String = String.replace(" ", "x")
         String = String.lower()
@@ -101,12 +107,20 @@ if __name__ == "__main__":
         for x in range(dims):
             print(Encrypted_Matrix[x])
         print(f"Encrypted String: {Encrypted_String}")
+        # Write new content (overwrites existing file)
+        dict_to_write = {"Encrypted_String": Encrypted_String, "NumMatrix": NumMatrix}
+        with open(FileName, 'w') as f:
+            f.write(f"{dict_to_write}")
     else:
-        String = input("Enter the string you wish to decrypt: ")
-        NumMatrix = input("Enter the matrix used to encrypt the string (in the format [[0,1,2],[3,4,5],[6,7,8]]): ")
+        with open(input("Enter the name of the file you wish to read the encrypted string from (add the .txt extension): "), 'r') as f:
+            content = f.read()
+        content = eval(content)
+        String = content["Encrypted_String"]
+        NumMatrix = content["NumMatrix"]
+        CharMatrix = copy.deepcopy(NumMatrix)
         size = len(String)
         dims = isqrt(size)
-        Decrypted_Matrix = Decrypt_String_to_Matrix(String, NumMatrix)
+        Decrypted_Matrix = Decrypt_String_to_Matrix(String, CharMatrix)
         for x in range(dims):
             print(Decrypted_Matrix[x])
         Decrypted_String = Get_String_From_Matrix(Decrypted_Matrix, NumMatrix, size)
