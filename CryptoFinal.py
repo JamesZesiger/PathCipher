@@ -39,16 +39,29 @@ def Encrypt_String_to_Matrix(string, matrix):
 def Decrypt_String_to_Matrix(encrypted_string, matrix):
     # This function decrypts the input string using the matrix.
     char_list = list(encrypted_string)
-    #print(matrix)
+    NumMatrix = copy.deepcopy(matrix)
+    place = 0
     for x in range(len(matrix)):
         for y in range(len(matrix)):
-            matrix[x][y] = char_list.pop(0)
+            matrix[x][y] = char_list[place]
+            place += 1
     return matrix
+
+def Get_String_From_Matrix(matrix, NumMatrix, length):
+    # This function gets the string from the matrix.
+    string = ""
+    for x in range(length):
+        for y in range(len(matrix)):
+            for z in range(len(matrix)):
+                if NumMatrix[y][z] == str(x):
+                    string += matrix[y][z]
+    return string
 
 if __name__ == "__main__":
     String = input("Enter the string you wish to encrypt: ")
     Str_length = len(String)
     String = String.replace(" ", "x")
+    String = String.lower()
     print(f"The length of the string is: {Str_length}")
     size = 0
     for x in squares.keys():
@@ -84,9 +97,8 @@ if __name__ == "__main__":
     for x in range(dims):
         print(Encrypted_Matrix[x])
     print(f"Encrypted String: {Encrypted_String}")
-    print(NumMatrix)
     Decrypted_Matrix = Decrypt_String_to_Matrix(Encrypted_String, NumMatrix)
     for x in range(dims):
         print(Decrypted_Matrix[x])
-
-
+    Decrypted_String = Get_String_From_Matrix(Decrypted_Matrix, NumMatrix, size)
+    print(f"Decrypted String: {Decrypted_String}")
