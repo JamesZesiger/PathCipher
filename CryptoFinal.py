@@ -5,6 +5,14 @@ import random
 squares = {i: i**2 for i in range(1, 21)}
 print(squares)
 
+def Int_to_Char_Matrix(matrix):
+    # This function converts a matrix of ints to a matrix of chars.
+    char_matrix = copy.deepcopy(matrix)
+    for x in range(len(matrix)):
+        for y in range(len(matrix)):
+            char_matrix[x][y] = str(matrix[x][y])
+    return char_matrix
+
 def RandomFill(length):
     # This function fills the input string with random ints until it reaches the specified length.
     Path = set()
@@ -132,6 +140,12 @@ if __name__ == "__main__":
             print(Encrypted_Matrix[x])
         print(f"Encrypted String: {Encrypted_String}")
         # Write new content (overwrites existing file)
+        if FileName.endswith('.txt'):
+             pass
+        else:            
+            FileName += '.txt'
+        if type(NumMatrix[0][0]) == int:
+            NumMatrix = Int_to_Char_Matrix(NumMatrix)
         dict_to_write = {"Encrypted_String": Encrypted_String, "NumMatrix": NumMatrix}
         with open(FileName, 'w') as f:
             f.write(f"{dict_to_write}")
