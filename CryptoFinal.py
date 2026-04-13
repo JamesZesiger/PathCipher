@@ -3,7 +3,6 @@ from math import isqrt
 import random
 
 squares = {i: i**2 for i in range(1, 21)}
-print(squares)
 
 def Int_to_Char_Matrix(matrix):
     # This function converts a matrix of ints to a matrix of chars.
@@ -85,7 +84,8 @@ if __name__ == "__main__":
                 print("The length of the string is too long. Please enter a string with a length of 400 or less.")
             else:
                 break
-        FileName = input("Enter the name of the file you wish to save the encrypted string to (add the .txt extension): ")
+        enc_file = input("Enter the name of the file to save the encrypted string (e.g., encrypted.txt): ")
+        matrix_file = input("Enter the name of the file to save the matrix (e.g., matrix.txt): ")
         print(f"The length of the string is: {Str_length}")
         size = 0
         for x in squares.keys(): 
@@ -139,24 +139,27 @@ if __name__ == "__main__":
         for x in range(dims):
             print(Encrypted_Matrix[x])
         print(f"Encrypted String: {Encrypted_String}")
-        # Write new content (overwrites existing file)
-        if FileName.endswith('.txt'):
-             pass
-        else:            
-            FileName += '.txt'
+        # Save encrypted string
+        if not enc_file.endswith('.txt'):
+            enc_file += '.txt'
+        with open(enc_file, 'w') as f:
+            f.write(Encrypted_String)
+        # Save matrix
         if type(NumMatrix[0][0]) == int:
             NumMatrix = Int_to_Char_Matrix(NumMatrix)
-        dict_to_write = {"Encrypted_String": Encrypted_String, "NumMatrix": NumMatrix}
-        with open(FileName, 'w') as f:
-            f.write(f"{dict_to_write}")
+        if not matrix_file.endswith('.txt'):
+            matrix_file += '.txt'
+        with open(matrix_file, 'w') as f:
+            f.write(str(NumMatrix))
+        print(f"Encrypted string saved to {enc_file}")
+        print(f"Matrix saved to {matrix_file}")
     else:
-        string = input("Enter the name of the file you wish to read the encrypted string from (add the .txt extension): ")
-        ReadName = f"{string}"
-        with open(string, 'r') as f:
-            content = f.read()
-        content = eval(content)
-        String = content["Encrypted_String"]
-        NumMatrix = content["NumMatrix"]
+        enc_file = input("Enter the name of the file containing the encrypted string (e.g., encrypted.txt): ")
+        matrix_file = input("Enter the name of the file containing the matrix (e.g., matrix.txt): ")
+        with open(enc_file, 'r') as f:
+            String = f.read().strip()
+        with open(matrix_file, 'r') as f:
+            NumMatrix = eval(f.read())
         CharMatrix = copy.deepcopy(NumMatrix)
         size = len(String)
         dims = isqrt(size)
